@@ -1,0 +1,35 @@
+on:
+  push:
+    branches:
+      - main
+
+name: 🚀 Deploy website on push
+
+jobs:
+  build-and-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Install Node and build site
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build Quartz
+        run: npx quartz build
+
+      - name: 📂 Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_ROOT }}
+          local-dir: ./public/
