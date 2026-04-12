@@ -33,8 +33,10 @@ Distinguimos entre clon superficial vs profundo:
 * **Clon superficial**: sintaxis spread (`{…obj}`) o método `Object.assign()`
 * **Clon profundo**: `structuredClone()`
 
-Antaño: **JSON.parse(JSON.stringify())**  
-const jsonClone = JSON.**parse**(JSON.**stringify**(object))
+Antaño: `JSON.parse(JSON.stringify())`:
+```js
+const jsonClone = JSON.parse(JSON.stringify(object))
+```
 
 
 ## ¿Cómo recibirías múltiples argumentos en javascript?
@@ -53,8 +55,10 @@ Igual que con los objetos, hay que distinguir entre clon superficial vs profundo
 * **Clon superficial**: sintaxis spread (`[…arr]`) o  métodos como `Array.slice()`, `Array.from()`
 * **Clon profundo**: `structuredClone()`  
 
-Antaño: **JSON.parse(JSON.stringify())**  
-const jsonClone = JSON.**parse**(JSON.**stringify**(array))
+Antaño: `JSON.parse(JSON.stringify())`:
+```js
+const jsonClone = JSON.parse(JSON.stringify(array))
+```
 
   
 ## ¿Como añades y borras elementos de un array?
@@ -90,7 +94,7 @@ Aunque el concepto anterior se refiere a sistemas distribuidos, JavaScript aplic
 >
 >So they effectively both do the same thing, but one is for variables and the other is for properties.
 
-```
+```ts
 const x = 5;
 
 // Not allowed
@@ -108,7 +112,7 @@ e.y = 4;
 
 >==Important note... "cannot be re-assigned" is not the same as immutability.==
 
-```
+```js
 const myArr = [1, 2, 3];
 
 // Not allowed

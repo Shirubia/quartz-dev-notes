@@ -81,7 +81,7 @@ En JS al final solo hay un hilo.
 
 ==Con promesas.==
 
-```
+```js
 .then
 .catch
 .finally
@@ -95,7 +95,7 @@ En JS al final solo hay un hilo.
 
 `Promise.all()`
 
-```
+```js
 const promesas = [fetch(url1), fetch(url2), fetch(url3)];
 
 Promise.all(promesas)
@@ -105,7 +105,7 @@ Promise.all(promesas)
 
 Para un código más limpio y legible, puedes combinar `async`/`await` con `Promise.all`.
 
-```
+```js
 async function resolverPromesas() {
 	try {
 		const resultados = await Promise.all([p1, p2, p3]);
@@ -122,7 +122,7 @@ async function resolverPromesas() {
 
 Los errores en `async`/`await` se manejan principalmente utilizando bloques **`try...catch`**, lo que permite capturar rechazos de promesas de forma sincrónica y limpia. El código asíncrono se coloca dentro del `try`, y si una promesa es rechazada, el flujo salta automáticamente al `catch`, evitando errores no controlados. 
 
-```
+```js
 async function fetchData() {
 	try {
 		const response = await fetch('https://api.ejemplo.com/datos');
@@ -188,4 +188,6 @@ También se pueden hacer con fetch Api (`fetch()`)
 
 ## Apis en html5: cómo averiguar la compatibilidad
 
-Caniuse??
+* [Can I use... Support tables for HTML5, CSS3, etc](https://caniuse.com/)
+
+>"Can I use" provides up-to-date browser support tables for support of front-end web technologies on desktop and mobile web browsers.

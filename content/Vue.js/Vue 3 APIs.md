@@ -14,7 +14,7 @@ You organize your component by **type of thing** (data, methods, lifecycle…)
 
 ### Example:
 
-```
+```js
 export default {  
   data() {  
     return {  
@@ -42,7 +42,7 @@ export default {
 
 So mentally, this feels like:
 
-```
+```js
 export class MyComponent {  
 	count = 0;  
 	  
@@ -74,7 +74,7 @@ Instead of grouping by type, you group by **feature/logic**
 
 ### Example:
 
-```
+```js
 import { ref } from 'vue'
 
 export default {
@@ -104,7 +104,7 @@ This is closer to:
 
 Think:
 
-```
+```js
 function useCounter() {  
   const count = signal(0);  
   
@@ -124,7 +124,7 @@ function useCounter() {
 
 In Vue:
 
-```
+```js
 count.value++
 ```
 
@@ -155,7 +155,7 @@ Same as Composition API — but **less boilerplate**
 
 ### Example:
 
-```
+```js
 <script setup>
 import { ref } from 'vue'
 
