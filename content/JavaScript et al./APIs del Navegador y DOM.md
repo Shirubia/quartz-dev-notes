@@ -106,14 +106,40 @@ Promise.all(promesas)
 Para un código más limpio y legible, puedes combinar `async`/`await` con `Promise.all`.
 
 ```js
-async function resolverPromesas() {
-	try {
-		const resultados = await Promise.all([p1, p2, p3]);
-		console.log(resultados);
-	} catch (error) {
-		console.error("Una promesa falló", error);
-	}
-} finally {} (opcional)
+async function cargarDatosDashboard() {
+    console.log("Iniciando carga de datos...");
+
+    // 1. Definir las promesas (las operaciones se inician en paralelo)
+    const promesaUsuarios = fetch('https://typicode.com').then(res => res.json());
+    const promesaPosts = fetch('https://typicode.com').then(res => res.json());
+    const promesaComentarios = fetch('https://typicode.com').then(res => res.json());
+
+    try {
+        // 2. Usar await con Promise.all para esperar a que TODAS terminen
+        const [usuarios, posts, comentarios] = await Promise.all([
+            promesaUsuarios,
+            promesaPosts,
+            promesaComentarios
+        ]);
+
+        console.log("Datos cargados:");
+        console.log("Usuarios:", usuarios.length);
+        console.log("Posts:", posts.length);
+        console.log("Comentarios:", comentarios.length);
+
+    } catch (error) {
+        // Manejo de errores: si una falla, entra aquí
+        console.error("Error cargando los datos:", error);
+    } finally { // Opcional
+        // 3. Este bloque se ejecuta SIEMPRE (haya error o no)
+        console.log("Operación de carga finalizada (con éxito o error).");
+        // Ejemplo: Ocultar un spinner de carga
+        // ocultarSpinner();
+    }
+}
+
+cargarDatosDashboard();
+
 ```
 
   
