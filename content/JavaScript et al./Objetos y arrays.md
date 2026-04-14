@@ -128,6 +128,6 @@ myArr[0] = 9;
 
 * Source: [https://stackoverflow.com/a/46561261](https://stackoverflow.com/a/46561261)
 
-> An array in JS/TS is a ==mutable object==. So `[an array]` is a constant reference to a mutable object. You can't point it at some other array, but you can change the contents of the array.
+> An array in JS/TS is a mutable object. So `[an array]` is ==a constant reference to a mutable object==. You can't point it at some other array, but you can change the contents of the array.
 
 * Source: [https://stackoverflow.com/questions/46561155/difference-between-const-and-readonly-in-typescript#comment80088422_46561261](https://stackoverflow.com/questions/46561155/difference-between-const-and-readonly-in-typescript#comment80088422_46561261)
