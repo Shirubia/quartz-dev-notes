@@ -29,7 +29,7 @@ El **Shadow DOM** es un estándar web que permite crear un "árbol DOM" separa
 
 - **Encapsulamiento de estilos:** Su principal objetivo es aislar estilos y componentes para evitar conflictos. El CSS definido dentro de un Shadow DOM no se "escapa" hacia afuera, y el CSS global no afecta a los estilos internos.
 - **Estructura:** Se conecta a un elemento a través de un "Shadow Root".
-- **Uso:** Es la base de los **Web Components**, permitiendo crear componentes (como botones o widgets) que funcionan de forma independiente en cualquier entorno (Vanilla JS, React, Angular). 
+- **Uso:** Es la base de los [[Web Components]], permitiendo crear componentes (como botones o widgets) que funcionan de forma independiente en cualquier entorno (Vanilla JS, React, Angular). 
 
 **3. ¿Qué es un Slot?**
 
@@ -82,9 +82,9 @@ En JS al final solo hay un hilo.
 ==Con promesas.==
 
 ```js
-.then
-.catch
-.finally
+.then()
+.catch()
+.finally()
 ```
   
   
@@ -169,12 +169,12 @@ async function fetchData() {
 
 ## 4. ¿Qué se ejecuta antes un setTimeout o una promesa?
 
-Promesa
+==Promesa==.
   
 
 ## Función pura vs impura
 
-==Pura: misma entrada = misma salida==.
+==Pura: a misma entrada, misma salida==.
 
 >Las funciones puras en JavaScript devuelven siempre el mismo resultado para las mismas entradas y ==carecen de efectos secundarios== (no modifican variables externas ni el DOM), garantizando predictibilidad y fácil testeo. Las impuras pueden alterar el estado externo, depender de variables globales o realizar interacciones (API, consola), siendo necesarias para acciones reales, pero más complejas de gestionar. 
 

@@ -10,7 +10,7 @@ JavaScript es ==monohilo y síncrono==.
 
 ## ¿Qué tipo de lenguaje es Typescript? Interpretado, compilado…
 
-TypeScript es un lenguaje ==**transpilado**==.
+TypeScript es un lenguaje ==transpilado==.
 
 - **Compilación (Transpilación):** El compilador de TypeScript (tsc) convierte el código .ts en código .js funcional.
   

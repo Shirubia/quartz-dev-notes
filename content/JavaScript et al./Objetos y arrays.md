@@ -81,7 +81,7 @@ Aunque el concepto anterior se refiere a sistemas distribuidos, JavaScript aplic
 
 >**`.map` returns a new array**, whereas `.forEach` doesn't return anything. Basically, if you want to obtain a modified form of the previous array, you use `.map`.
 
-==Si solo quieres iterar, como en un bucle `for`, usa `.forEach`.==
+==Si solo quieres iterar==, como en un bucle `for`, usa `.forEach`.
 
 
 ## Arrays & const and mutability

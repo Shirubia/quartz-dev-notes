@@ -4,6 +4,7 @@ draft: false
 date: 2026-04-13
 tags:
   - git
+  - npx
 ---
 
 | Action                 | Command                    |

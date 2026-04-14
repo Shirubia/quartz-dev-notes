@@ -60,7 +60,7 @@ Véase más arriba: ¿Qué es un contexto en JS?
 
 ## ¿Qué es `this`?
 
-==`this` es el contexto==.
+`this` ==es el contexto==.
 
 >**THIS es el objeto contexto de Javascript en el cual se está ejecutando el código actual.**
 
