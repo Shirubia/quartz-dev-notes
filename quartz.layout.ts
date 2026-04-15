@@ -8,9 +8,9 @@ export const sharedPageComponents: SharedLayout = {
   afterBody: [],
   footer: Component.Footer({
     links: {
-      GitHub: "https://github.com/jackyzha0/quartz",
-      "Discord Community": "https://discord.gg/cRFFHYye7t",
       "silvia.codes": "https://silvia.codes",
+      "RSS Feed": "https://notes.silvia.codes/index.xml",
+      "Source code": "https://github.com/Shirubia/quartz-dev-notes",
     },
   }),
 }
