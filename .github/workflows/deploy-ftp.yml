@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: 🚚 Get latest code
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.2
 
       - name: 🛠️ Install Node and build site
-        uses: actions/setup-node@v4.2.0
+        uses: actions/setup-node@v6.3.0
         with:
           node-version: 22
 
@@ -26,7 +26,7 @@ jobs:
         run: npx quartz build
 
       - name: 📂 Deploy to FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
