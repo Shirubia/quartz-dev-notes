@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: 🚚 Get latest code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: 🛠️ Install Node and build site
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: 22
 
