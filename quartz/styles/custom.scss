@@ -1,3 +1,11 @@
 @use "./variables.scss" as *;
 
-// put your custom CSS here!
+.note-properties .multi-select-pill,
+.note-properties .multi-select-container .multi-select-pill:has(a.note-properties-tag):hover {
+  background: transparent;
+}
+
+.note-properties .multi-select-pill:has(a.note-properties-tag):hover .note-properties-tag {
+  background-color: var(--secondary);
+  color: var(--light);
+}
