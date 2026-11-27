@@ -32,7 +32,7 @@ export interface Theme {
   }
   cdnCaching: boolean
   colors: Colors
-  fontOrigin: "googleFonts" | "local"
+  fontOrigin: "googleFonts" | "upsetFonts" | "local"
 }
 
 export type ThemeKey = keyof Colors
@@ -91,14 +91,16 @@ export function googleFontHref(theme: Theme) {
   const bodyFont = formatFontSpecification("body", body)
   const codeFont = formatFontSpecification("code", code)
 
-  return `https://fonts.googleapis.com/css2?family=${headerFont}&family=${bodyFont}&family=${codeFont}&display=swap`
+  const provider = theme.fontOrigin === "upsetFonts" ? "fonts.upset.dev" : "fonts.googleapis.com"
+  return `https://${provider}/css2?family=${headerFont}&family=${bodyFont}&family=${codeFont}&display=swap`
 }
 
 export function googleFontSubsetHref(theme: Theme, text: string) {
   const title = theme.typography.title || theme.typography.header
   const titleFont = formatFontSpecification("title", title)
 
-  return `https://fonts.googleapis.com/css2?family=${titleFont}&text=${encodeURIComponent(text)}&display=swap`
+  const provider = theme.fontOrigin === "upsetFonts" ? "fonts.upset.dev" : "fonts.googleapis.com"
+  return `https://${provider}/css2?family=${titleFont}&text=${encodeURIComponent(text)}&display=swap`
 }
 
 export interface GoogleFontFile {
@@ -122,18 +124,20 @@ export async function processGoogleFonts(
   fontFiles: GoogleFontFile[]
 }> {
   const fontSourceRegex =
-    /url\((https:\/\/fonts.gstatic.com\/.+(?:\/|(?:kit=))(.+?)[.&].+?)\)\sformat\('(\w+?)'\);/g
+    /url\((https:\/\/fonts\.gstatic\.com\/.+(?:\/|(?:kit=))(.+?)[.&].+?)\)\sformat\('(\w+?)'\);|url\((\/f\/.+\/([^/]+)\.(\w+))\)format\('(\w+?)'\);/g
   const fontFiles: GoogleFontFile[] = []
   let processedStylesheet = stylesheet
 
   let match
   while ((match = fontSourceRegex.exec(stylesheet)) !== null) {
-    const url = match[1]
-    const filename = match[2]
-    const extension = fontMimeMap[match[3].toLowerCase()]
+    const upsetFont = match[4] !== undefined
+    const url = upsetFont ? `https://fonts.upset.dev${match[4]}` : match[1]
+    const source = upsetFont ? match[4] : match[1]
+    const filename = upsetFont ? match[5] : match[2]
+    const extension = fontMimeMap[(upsetFont ? match[7] : match[3]).toLowerCase()]
     const staticUrl = `https://${baseUrl}/static/fonts/${filename}.${extension}`
 
-    processedStylesheet = processedStylesheet.replace(url, staticUrl)
+    processedStylesheet = processedStylesheet.replace(source, staticUrl)
     fontFiles.push({ url, filename, extension })
   }
 

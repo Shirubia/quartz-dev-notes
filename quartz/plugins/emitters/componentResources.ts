@@ -316,7 +316,10 @@ export const ComponentResources: QuartzEmitterPlugin = () => {
       let googleFontsStyleSheet = ""
       if (cfg.theme.fontOrigin === "local") {
         // let the user do it themselves in css
-      } else if (cfg.theme.fontOrigin === "googleFonts" && !cfg.theme.cdnCaching) {
+      } else if (
+        (cfg.theme.fontOrigin === "googleFonts" || cfg.theme.fontOrigin === "upsetFonts") &&
+        !cfg.theme.cdnCaching
+      ) {
         // when cdnCaching is true, we link to google fonts in Head.tsx
         const theme = ctx.cfg.configuration.theme
         const response = await fetch(googleFontHref(theme))

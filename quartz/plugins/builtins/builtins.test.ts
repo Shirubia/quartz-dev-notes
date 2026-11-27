@@ -991,6 +991,10 @@ describe("fonts built-in", () => {
       single({ name: "Lora", weights: [700], includeItalic: true }),
       /family=Lora:ital,wght@0,700;1,700&/,
     )
+    assert.match(
+      googleFontHref(resolveFontSpecs({ body: "Inter" }, {}), "upsetFonts"),
+      /^https:\/\/fonts\.upset\.dev\/css2/,
+    )
   })
 
   test("explicit body/interface/code fonts set Obsidian's overrides on body", () => {

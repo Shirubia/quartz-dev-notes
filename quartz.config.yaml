@@ -14,7 +14,7 @@ configuration:
     - templates
     - .obsidian
   theme:
-    fontOrigin: googleFonts
+    fontOrigin: upsetFonts
     cdnCaching: true
     typography:
       header: Montserrat

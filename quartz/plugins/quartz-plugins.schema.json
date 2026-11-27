@@ -90,7 +90,7 @@
           "properties": {
             "fontOrigin": {
               "type": "string",
-              "enum": ["googleFonts", "local"],
+              "enum": ["googleFonts", "upsetFonts", "local"],
               "description": "Source of fonts"
             },
             "cdnCaching": {

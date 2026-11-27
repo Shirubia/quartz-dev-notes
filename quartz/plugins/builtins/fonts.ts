@@ -161,7 +161,10 @@ function formatMerged(entry: MergedFont): string {
   return defaultWeight ? entry.name : `${entry.name}:wght@${weights.join(";")}`
 }
 
-export function googleFontHref(fonts: ReturnType<typeof resolveFontSpecs>): string {
+export function googleFontHref(
+  fonts: ReturnType<typeof resolveFontSpecs>,
+  fontOrigin: "googleFonts" | "upsetFonts" = "googleFonts",
+): string {
   const merged = new Map<string, MergedFont>()
   mergeInto(merged, "header", fonts.header)
   mergeInto(merged, "body", fonts.body)
@@ -173,7 +176,8 @@ export function googleFontHref(fonts: ReturnType<typeof resolveFontSpecs>): stri
     .map(formatMerged)
     .map((f) => `family=${encodeURIComponent(f)}`)
     .join("&")
-  return `https://fonts.googleapis.com/css2?${params}&display=swap`
+  const provider = fontOrigin === "upsetFonts" ? "fonts.upset.dev" : "fonts.googleapis.com"
+  return `https://${provider}/css2?${params}&display=swap`
 }
 
 const fontMime: Record<string, string> = {
@@ -188,7 +192,19 @@ const fontUrlPattern =
 /** Rewrite Google Fonts URLs to files next to the stylesheet (works under any base path). */
 export function processGoogleFonts(stylesheet: string) {
   const fontFiles: { url: string; filename: string; extension: string }[] = []
-  const processedStylesheet = stylesheet.replace(
+  let processedStylesheet = stylesheet.replace(
+    /url\(\/f\/.+\/([^/]+)\.(\w+)\)format\('(\w+?)'\);/g,
+    (match, filename: string, pathExtension: string, format: string) => {
+      const extension = fontMime[format] ?? pathExtension
+      const url = `https://fonts.upset.dev${match.slice(match.indexOf("/f/"), match.indexOf(")"))}`
+      fontFiles.push({ url, filename, extension })
+      return match.replace(
+        match.slice(match.indexOf("/f/"), match.indexOf(")")),
+        `${filename}.${extension}`,
+      )
+    },
+  )
+  processedStylesheet = processedStylesheet.replace(
     fontUrlPattern,
     (match, url: string, filename: string, format: string) => {
       const extension = fontMime[format] ?? format
@@ -374,19 +390,32 @@ export const Fonts: QuartzEmitterPlugin<FontsConfig> = (userOpts) => {
       // theme.cdnCaching is on; only add a link for fonts configured here on top of that.
       const theme = ctx?.cfg?.configuration?.theme as
         { cdnCaching?: boolean; fontOrigin?: string } | undefined
-      const headLinksTypography = theme?.cdnCaching === true && theme?.fontOrigin === "googleFonts"
+      const headLinksTypography =
+        theme?.cdnCaching === true &&
+        (theme?.fontOrigin === "googleFonts" || theme?.fontOrigin === "upsetFonts")
       const overridesTypography = (
         ["title", "header", "body", "code", "interface", ...HEADING_LEVELS] as const
       ).some((k) => options[k] !== undefined)
-      if (options.fontOrigin === "googleFonts" && (!headLinksTypography || overridesTypography)) {
-        const href = googleFontHref(resolveFontSpecs(options, typography))
+      if (
+        (options.fontOrigin === "googleFonts" || options.fontOrigin === "upsetFonts") &&
+        (!headLinksTypography || overridesTypography)
+      ) {
+        const href = googleFontHref(resolveFontSpecs(options, typography), options.fontOrigin)
+        const provider =
+          options.fontOrigin === "upsetFonts" ? "fonts.upset.dev" : "fonts.googleapis.com"
+        const gstaticOrigin =
+          options.fontOrigin === "googleFonts"
+            ? [
+                h("link", {
+                  rel: "preconnect",
+                  href: "https://fonts.gstatic.com",
+                  crossOrigin: "anonymous",
+                }),
+              ]
+            : []
         additionalHead = [
-          h("link", { rel: "preconnect", href: "https://fonts.googleapis.com" }),
-          h("link", {
-            rel: "preconnect",
-            href: "https://fonts.gstatic.com",
-            crossOrigin: "anonymous",
-          }),
+          h("link", { rel: "preconnect", href: `https://${provider}` }),
+          ...gstaticOrigin,
           h("link", { rel: "stylesheet", href }),
         ]
       } else if (options.fontOrigin === "selfHosted") {

@@ -62,17 +62,24 @@ export default (() => {
         {coreScript && coreScript.contentType === "external" && (
           <link rel="preload" href={coreScript.src} as="script" />
         )}
-        {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
-          <>
-            <link rel="preconnect" href="https://fonts.googleapis.com" />
-            {/* Font files are fetched with CORS, so only a CORS connection is reused. */}
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-            <link rel="stylesheet" href={googleFontHref(cfg.theme)} />
-            {cfg.theme.typography.title && (
-              <link rel="stylesheet" href={googleFontSubsetHref(cfg.theme, cfg.pageTitle)} />
-            )}
-          </>
-        )}
+        {cfg.theme.cdnCaching &&
+          (cfg.theme.fontOrigin === "googleFonts" || cfg.theme.fontOrigin === "upsetFonts") && (
+            <>
+              {cfg.theme.fontOrigin === "googleFonts" ? (
+                <>
+                  <link rel="preconnect" href="https://fonts.googleapis.com" />
+                  {/* Font files are fetched with CORS, so only a CORS connection is reused. */}
+                  <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                </>
+              ) : (
+                <link rel="preconnect" href="https://fonts.upset.dev" />
+              )}
+              <link rel="stylesheet" href={googleFontHref(cfg.theme)} />
+              {cfg.theme.typography.title && (
+                <link rel="stylesheet" href={googleFontSubsetHref(cfg.theme, cfg.pageTitle)} />
+              )}
+            </>
+          )}
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <meta property="og:site_name" content={cfg.pageTitle} />

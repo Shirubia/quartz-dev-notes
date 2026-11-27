@@ -177,7 +177,7 @@ export interface FontsConfig extends BuiltinToggle {
   /** Use fonts registered by a theme plugin (e.g. @quartz-themes/core). Default `true`. */
   useThemeFonts?: boolean
   /** Where fonts load from. Default `"googleFonts"`. */
-  fontOrigin?: "googleFonts" | "local" | "selfHosted"
+  fontOrigin?: "googleFonts" | "upsetFonts" | "local" | "selfHosted"
 }
 
 export interface ContentIndexConfig extends BuiltinToggle {
