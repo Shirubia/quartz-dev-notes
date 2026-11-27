@@ -120,11 +120,33 @@ describe("transforms", () => {
         ["test/special chars?.md", "test/special-chars"],
         ["test/special chars #3.md", "test/special-chars-3"],
         ["cool/what about r&d?.md", "cool/what-about-r-and-d"],
+        // Obsidian "Folder Notes" convention: folder/folder.md is the folder's landing page
+        ["characters/characters.md", "characters/index"],
+        ["fiction/books/books.md", "fiction/books/index"],
+        ["a/a/a.md", "a/a/index"],
+        // Top-level single-segment: NOT rewritten (parentFolder storage, out of scope)
+        ["characters.md", "characters"],
+        // Non-matching last two segments: no rewrite
+        ["characters/alice.md", "characters/alice"],
+        ["characters/sub/characters.md", "characters/sub/characters"],
+        // Folder literally named "index" is unaffected by the rewrite
+        ["index/index.md", "index/index"],
+        ["docs/index/index.md", "docs/index/index"],
       ],
       path.slugifyFilePath,
       path.isFilePath,
       path.isFullSlug,
     )
+  })
+
+  test("slugifyFilePath + simplifySlug end-to-end canonicalization", () => {
+    // Both folder-note conventions must produce identical user-facing URLs.
+    const indexStyle = path.simplifySlug(path.slugifyFilePath("characters/index.md" as any))
+    const folderNameStyle = path.simplifySlug(
+      path.slugifyFilePath("characters/characters.md" as any),
+    )
+    assert.strictEqual(indexStyle, folderNameStyle)
+    assert.strictEqual(indexStyle, "characters/")
   })
 
   test("transformInternalLink", () => {
@@ -148,6 +170,15 @@ describe("transforms", () => {
         ["content/with spaces", "./content/with-spaces"],
         ["content/with spaces/index", "./content/with-spaces/"],
         ["content/with spaces#and Anchor!", "./content/with-spaces#and-anchor"],
+        // Folder note convention: same-name parent triggers /index rewrite → folder path
+        ["characters/characters", "./characters/"],
+        ["My Folder/My Folder", "./my-folder/"],
+        ["a/b/c/d/d", "./a/b/c/d/"],
+        ["My Folder/My Folder#heading", "./my-folder/#heading"],
+        // Non-matching last segments: no folder rewrite
+        ["characters/alice", "./characters/alice"],
+        // Percent-encoded spaces
+        ["My%20Folder/My%20Note", "./my-folder/my-note"],
       ],
       path.transformInternalLink,
       (_x: string): _x is string => true,
@@ -359,5 +390,53 @@ describe("resolveRelative", () => {
     assert.strictEqual(path.resolveRelative("abc/def" as FullSlug, "" as SimpleSlug), "../")
     assert.strictEqual(path.resolveRelative("abc/def" as FullSlug, "ghi" as SimpleSlug), "../ghi")
     assert.strictEqual(path.resolveRelative("abc/def" as FullSlug, "ghi/" as SimpleSlug), "../ghi/")
+  })
+})
+
+describe("slugs.stripDiacritics (#2410)", () => {
+  const withStrip = <T>(fn: () => T): T => {
+    path.setSlugOptions({ stripDiacritics: true })
+    try {
+      return fn()
+    } finally {
+      path.setSlugOptions(undefined)
+    }
+  }
+
+  test("off by default: slugs keep their diacritics", () => {
+    assert.strictEqual(path.slugifyFilePath("české/čeština.md" as path.FilePath), "české/čeština")
+  })
+
+  test("strips diacritics from folder and file names", () => {
+    withStrip(() => {
+      const slug = (fp: string) => path.slugifyFilePath(fp as path.FilePath)
+      assert.strictEqual(slug("české/Čeština.md"), "ceske/cestina")
+      assert.strictEqual(slug("Příliš žluťoučký kůň.md"), "prilis-zlutoucky-kun")
+      assert.strictEqual(slug("Café/Crème brûlée.md"), "cafe/creme-brulee")
+      assert.strictEqual(slug("Tiếng Việt.md"), "tieng-viet")
+      assert.strictEqual(slug("obrázek.PNG"), "obrazek.PNG")
+      // decomposed input (macOS file names) gives the same slug
+      assert.strictEqual(slug("čeština.md"), "cestina")
+    })
+  })
+
+  test("keeps scripts whose marks are not Latin diacritics", () => {
+    withStrip(() => {
+      const slug = (fp: string) => path.slugifyFilePath(fp as path.FilePath)
+      assert.strictEqual(slug("한국어.md"), "한국어")
+      assert.strictEqual(slug("がぎぐ.md"), "がぎぐ")
+      assert.strictEqual(slug("हिन्दी.md"), "हिन्दी")
+      assert.strictEqual(slug("日本語/中文.md"), "日本語/中文")
+      // Latin letters without a decomposition fold to ASCII (utils 1.3.1)
+      assert.strictEqual(slug("Łódź ø ß.md"), "lodz-o-ss")
+      assert.strictEqual(slug("Æsir.md"), "aesir")
+    })
+  })
+
+  test("is idempotent", () => {
+    withStrip(() => {
+      const once = path.slugifyFilePath("Čeština/Ž.md" as path.FilePath)
+      assert.strictEqual(path.slugifyFilePath(`${once}.md` as path.FilePath), once)
+    })
   })
 })
